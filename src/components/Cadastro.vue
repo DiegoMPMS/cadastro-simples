@@ -115,7 +115,6 @@ export default {
 			required: value => !!value || 'Campo Obrigatório.',
 			comprimento_senha: value => value.length >= 8 || 'Senha deve conter no mínimo 8 caracteres.',
 			password_match: function(value) {
-				console.log(value)
 				return value === password || 'Senhas não conferem'
 			},
 			email: value => {
