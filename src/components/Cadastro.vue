@@ -114,6 +114,7 @@ export default {
 		rules: {
 			required: value => !!value || 'Campo Obrigatório.',
 			comprimento_senha: value => value.length >= 8 || 'Senha deve conter no mínimo 8 caracteres.',
+			// não consigo acessar a propriedade 'password' dentro da função abaixo, tanto com a declaração de função com 'function()' quanto com '=>'
 			password_match: function(value) {
 				return value === password || 'Senhas não conferem'
 			},
