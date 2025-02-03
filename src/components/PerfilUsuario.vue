@@ -21,12 +21,13 @@
             @click="irNovaInscricao"></v-list-item>
           <v-list-item prepend-icon="mdi-file-account-outline" title="Documentos Pessoais"
             @click="irDocumentosPessoais"></v-list-item>
+          
         </v-list>
-
         <!-- Item para sair da página no final da barra lateral -->
-        <v-list-group style="position: fixed; bottom: 0; width: 100%;">
-          <v-list-item prepend-icon="mdi-logout" title="Sair" @click="logout"></v-list-item>
-        </v-list-group>
+        <v-list-item style="position: fixed; bottom: 0; width: 100%;" prepend-icon="mdi-logout" title="Sair" @click="logout"></v-list-item>
+
+        
+        
 
       </v-list>
     </v-navigation-drawer>
