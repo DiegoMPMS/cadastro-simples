@@ -51,7 +51,7 @@
 								</v-col>
 								<v-col cols="12" sm="6">
 									<v-text-field v-model="cpf" :readonly="loading" :rules="[rules.required, rules.cpf_format, cpf_valid]" label="CPF"
-										placeholder="XXX.XXX.XXX-XX"></v-text-field>
+										placeholder="XXX.XXX.XXX-XX" maxlength="14"></v-text-field>
 								</v-col>
 							</v-row>
 						</v-container>
@@ -124,7 +124,7 @@ export default {
 			},
 			cpf_format: value =>{
 				const pattern = /([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})/
-				return pattern.test(value) || 'CPf em formato inválido'
+				return pattern.test(value) || 'CPF em formato inválido'
 			}
 		},
 		// usado pelas migalhas para mostrar a etapa do cadastro
@@ -152,7 +152,12 @@ export default {
 
 			this.loading = true
 
-			setTimeout(() => (this.loading = false), 2000)
+			// aqui deveria estar a chama da API para realizar o cadastro com os dados iniciais, e a espera pela resposta para seguir ao próximo passo 
+			// e provavelmente um acesso ao VUE storage pra guardar as informações caso seja necessário voltar ou reiniciar o formulário
+			// por enquanto esperamos alguns segundos e seguimos para a próxima página.
+			setTimeout(() => (this.$router.push('cadastro2')), 2000)	
+			
+			
 		},
 		password_match() {
 			if (this.password === this.password_confirmation) {
@@ -160,11 +165,38 @@ export default {
 			} else {return 'Senhas não conferem'}
 		},
 		cpf_valid(){
+			var cpf_temp = this.cpf;
+			cpf_temp = cpf_temp.replace(/[^\d]/g, "");
+			console.log('temp:' + cpf_temp);
+
+			// primeira condição de falha do validador não é encontrada com operações matemáticas.
+			if (cpf_temp == '00000000000') return 'CPF inválido1';
+
+			var soma = 0;
+			var resto = 0;
+			console.log('temp2: '+cpf_temp)
+
+			for (let i=1; i<=9; i++) soma = soma + parseInt(cpf_temp.substring(i-1,i)) * (11-1);
+			resto = (soma * 10) % 11;
+
+
+			// validar primeiro digito verificador
+			if (resto == 10) resto = 0;
+			if (resto != parseInt(cpf_temp.substring(9,10))) return 'CPF inválido2';
+			
+			soma = 0;
+			for (let i=1; i<10; i++) soma = soma + parseInt(cpf_temp.substring(i-1,i)) * (12-1);
+			resto = (soma * 10) % 11;
+
+			// validar segundo digito verificador
+			if (resto == 10) resto = 0;
+			if (resto != parseInt(cpf_temp.substring(10,11))) return 'CPF inválido3';
+
+			//aplicar pontos e barra no cpf
+			console.log('done')
+			this.cpf = cpf_temp.substring(0,3) + '.' + cpf_temp.substring(3,6) + '.' + cpf_temp.substring(6,9) + '-' + cpf_temp.substring(9,11);
 			return true
 		}                                                                    
-		// required(v) {
-		// 	return !!v || 'Campo Obrigatório'
-		// }
 	}
 }
 </script>
