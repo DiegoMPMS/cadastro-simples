@@ -50,7 +50,7 @@
 									</v-text-field>
 								</v-col>
 								<v-col cols="12" sm="6">
-									<v-text-field v-model="cpf" :readonly="loading" :rules="[rules.required, rules.cpf]" label="CPF"
+									<v-text-field v-model="cpf" :readonly="loading" :rules="[rules.required, rules.cpf_format, cpf_valid]" label="CPF"
 										placeholder="XXX.XXX.XXX-XX"></v-text-field>
 								</v-col>
 							</v-row>
@@ -75,7 +75,7 @@
 								</v-col>
 								<v-col>
 									<v-text-field v-model="password_confirmation" type="password" :readonly="loading"
-										:rules="[rules.required, rules.comprimento_senha, rules.password_match]" label="Confirmar Senha"
+										:rules="[rules.required, rules.comprimento_senha, password_match]" label="Confirmar Senha"
 										placeholder="Digite sua senha" clearable></v-text-field>
 								</v-col>
 							</v-row>
@@ -115,14 +115,17 @@ export default {
 			required: value => !!value || 'Campo Obrigatório.',
 			comprimento_senha: value => value.length >= 8 || 'Senha deve conter no mínimo 8 caracteres.',
 			// não consigo acessar a propriedade 'password' dentro da função abaixo, tanto com a declaração de função com 'function()' quanto com '=>'
-			password_match: function(value) {
-				return value === password || 'Senhas não conferem'
-			},
+			// password_match: function(value) {
+			// 	return value === password || 'Senhas não conferem'
+			// },
 			email: value => {
 				const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 				return pattern.test(value) || 'Email inválido.'
 			},
-			cpf: value => true || 'precisa ser implementado'
+			cpf_format: value =>{
+				const pattern = /([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})/
+				return pattern.test(value) || 'CPf em formato inválido'
+			}
 		},
 		// usado pelas migalhas para mostrar a etapa do cadastro
 		items: [
@@ -151,6 +154,14 @@ export default {
 
 			setTimeout(() => (this.loading = false), 2000)
 		},
+		password_match() {
+			if (this.password === this.password_confirmation) {
+				return true;
+			} else {return 'Senhas não conferem'}
+		},
+		cpf_valid(){
+			return true
+		}                                                                    
 		// required(v) {
 		// 	return !!v || 'Campo Obrigatório'
 		// }
