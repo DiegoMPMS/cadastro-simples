@@ -26,7 +26,7 @@
 							<v-row>
 								<v-col cols="12" sm="6">
 									<v-text-field v-model="cep" :readonly="loading"
-										:rules="[rules.required, rules.cep_format, cep_search]" label="CEP" clearable></v-text-field>
+										:rules="[rules.required, rules.cep_format, cep_search]" label="CEP" maxlength="9" clearable></v-text-field>
 								</v-col>
 								<!-- Mover para dentro do campo de número, espaçamento do elemento na tela deixa ele desconexo do campo de 'Número' -->
 								<v-col>
@@ -42,7 +42,7 @@
 								</v-col>
 								<v-col cols="12" sm="6">
 									<v-text-field v-model="numero" :readonly="loading || sem_numero_checkbox" :rules="[rules.required]"
-										label="Número"></v-text-field>
+										label="Número" :variant="numero_field_variant"></v-text-field>
 								</v-col>
 							</v-row>
 
@@ -98,12 +98,17 @@ export default {
 		bairro: null,
 		cidade: null,
 		estado: null,
+		numero_field_variant: 'filled',
+		old_cep: null,
 
 		loading: false,
 		// Regras de validação para o formulário
 		rules: {
 			required: value => !!value || 'Campo Obrigatório.',
-			cep_format: value => !!value || 'Função precisa ser implementada',
+			cep_format: value => {
+				const pattern = /([0-9]{5}[-]?[0-9]{3})/
+				return pattern.test(value) || 'CEP em formato inválido'
+			},
 		},
 		// usado pelas migalhas para mostrar a etapa do cadastro
 		items: [
@@ -134,11 +139,36 @@ export default {
 		sem_numero_checkbox_update() {
 			if (this.sem_numero_checkbox) {
 				this.numero = 'Sem número';
+				this.numero_field_variant = 'outlined';
 			} else {
 				this.numero = null;
+				this.numero_field_variant = 'filled';
 			}
 		},
-		cep_search(){return true}
+		cep_search() {
+			// TODO - toda vez que o campo é preenchido ou sai de foco a função é chamada, adicionar código para realizar chamada apenas se o conteúdo tiver mudado
+			var cep_temp = this.cep.replace(/[-]/, "");
+
+			await fetch('https://brasilapi.com.br/api/cep/v1/' + cep_temp)
+				.then(response => {
+					if (!response.ok) {
+						if (response.status == '404') {
+							msg = "CEP não encontrado";
+							//throw msg;
+						}
+					}
+					return response.json();
+				})
+				.then(data => {
+					this.logradouro = data.street;
+					this.bairro = data.neighborhood;
+					this.cidade = data.city;
+					this.estado = data.state;
+					return true
+				})
+				console.log('mensagem: '+msg)
+				return msg
+		},
 	}
 }
 </script>

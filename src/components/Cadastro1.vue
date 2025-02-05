@@ -166,7 +166,7 @@ export default {
 		},
 		cpf_valid(){
 			var cpf_temp = this.cpf;
-			cpf_temp = cpf_temp.replace(/[^\d]/g, "");
+			cpf_temp = cpf_temp.replace(/[^\d]/, "");
 			console.log('temp:' + cpf_temp);
 
 			// primeira condição de falha do validador não é encontrada com operações matemáticas.
