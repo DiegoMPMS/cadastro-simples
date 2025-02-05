@@ -20,65 +20,54 @@
 
 						<v-container>
 
+
+							<!-- Se eu estiver entendo isso corretamente cols divide a linha em 12 "blocos" e sm indica quantos blocos tem ESSA coluna -->
+							<!-- tentei alterar o valor de 'sm' não vi mudança visual -->
 							<v-row>
-								<!-- Se eu estiver entendo isso corretamente cols divide a linha em 12 "blocos" e sm indica quantos blocos tem ESSA coluna -->
-								<!-- tentei alterar o valor de 'sm' não vi mudança visual -->
 								<v-col cols="12" sm="6">
-									<v-text-field v-model="nome" :readonly="loading" :rules="[rules.required]" label="Nome"
+									<v-text-field v-model="cep" :readonly="loading"
+										:rules="[rules.required, rules.cep_format, cep_search]" label="CEP" clearable></v-text-field>
+								</v-col>
+								<!-- Mover para dentro do campo de número, espaçamento do elemento na tela deixa ele desconexo do campo de 'Número' -->
+								<v-col>
+									<v-checkbox v-model="sem_numero_checkbox" @change="sem_numero_checkbox_update"
+										class="d-flex justify-center align-center" label="Sem Número"></v-checkbox>
+								</v-col>
+							</v-row>
+
+							<v-row>
+								<v-col cols="12" sm="6">
+									<v-text-field v-model="logradouro" :readonly="loading" :rules="[rules.required]" label="Logradouro"
 										clearable></v-text-field>
 								</v-col>
 								<v-col cols="12" sm="6">
-									<v-text-field v-model="sobrenome" :readonly="loading" :rules="[rules.required]" label="Sobrenome"
-										clearable></v-text-field>
+									<v-text-field v-model="numero" :readonly="loading || sem_numero_checkbox" :rules="[rules.required]"
+										label="Número"></v-text-field>
 								</v-col>
 							</v-row>
 
-							<v-row class="mb-2">
-								<v-col cols="12" sm="6">
-									<v-text-field v-model="nomeSocial" :readonly="loading" label="Nome Social" clearable>
-										<template v-slot:append-inner>
-											<v-tooltip location="bottom">
-												<template v-slot:activator="{ props }">
-													<v-icon v-bind="props" icon="mdi-help-circle-outline"></v-icon>
-												</template>
-												O nome social é o nome pelo qual a pessoa se identifica e é reconhecida na sociedade. Garantido
-												pelo
-												decreto nº 8.727,
-												de 28 de abril de 2016
-											</v-tooltip>
-										</template>
-									</v-text-field>
-								</v-col>
-								<v-col cols="12" sm="6">
-									<v-text-field v-model="cpf" :readonly="loading" :rules="[rules.required, rules.cpf_format, cpf_valid]" label="CPF"
-										placeholder="XXX.XXX.XXX-XX"></v-text-field>
-								</v-col>
-							</v-row>
-						</v-container>
-
-						<v-divider class="mb-6" thickness="3" opacity="0.6" color="light-blue"></v-divider>
-
-						<v-container>
 							<v-row>
 								<v-col cols="12" sm="12">
-									<v-text-field v-model="email" :readonly="loading" :rules="[rules.required, rules.email]" label="Email"
+									<v-text-field v-model="complemento" :readonly="loading" :rules="[rules.required]" label="Complemento"
 										clearable></v-text-field>
 								</v-col>
-
 							</v-row>
 
 							<v-row>
-								<v-col cols="12" sm="6">
-									<v-text-field v-model="password" type="password" :readonly="loading"
-										:rules="[rules.required, rules.comprimento_senha]" label="Senha" placeholder="Digite sua senha"
+								<v-col cols="12" sm="4">
+									<v-text-field v-model="bairro" :readonly="loading" :rules="[rules.required]" label="Bairro"
 										clearable></v-text-field>
 								</v-col>
-								<v-col>
-									<v-text-field v-model="password_confirmation" type="password" :readonly="loading"
-										:rules="[rules.required, rules.comprimento_senha, password_match]" label="Confirmar Senha"
-										placeholder="Digite sua senha" clearable></v-text-field>
+								<v-col cols="12" sm="4">
+									<v-text-field v-model="cidade" :readonly="loading" :rules="[rules.required]" label="Cidade"
+										clearable></v-text-field>
+								</v-col>
+								<v-col cols="12" sm="4">
+									<v-text-field v-model="estado" :readonly="loading" :rules="[rules.required]" label="Estado"
+										clearable></v-text-field>
 								</v-col>
 							</v-row>
+
 						</v-container>
 
 						<v-btn :disabled="!form" :loading="loading" color="success" size="large" type="submit"
@@ -101,18 +90,20 @@ export default {
 		form: false,
 		// cada field do formulário deve conter sua vária declara no script
 		// o nome do variável é 'linkado' usando v-model="nome_da_variável"
-		nome: null,
-		sobrenome: null,
-		nomeSocial: null,
-		cpf: null,
-		email: null,
-		password: null,
-		password_confirmation: null,
+		cep: null,
+		sem_numero_checkbox: null,
+		logradouro: null,
+		numero: null,
+		complemento: null,
+		bairro: null,
+		cidade: null,
+		estado: null,
 
 		loading: false,
 		// Regras de validação para o formulário
 		rules: {
 			required: value => !!value || 'Campo Obrigatório.',
+			cep_format: value => !!value || 'Função precisa ser implementada',
 		},
 		// usado pelas migalhas para mostrar a etapa do cadastro
 		items: [
@@ -138,10 +129,16 @@ export default {
 			// aqui deveria estar a chama da API para realizar o cadastro com os dados iniciais, e a espera pela resposta para seguir ao próximo passo 
 			// e provavelmente um acesso ao VUE storage pra guardar as informações caso seja necessário voltar ou reiniciar o formulário
 			// por enquanto esperamos alguns segundos e seguimos para a próxima página.
-			setTimeout(() => (this.$router.push('cadastro3')), 2000)	
-			
-			
+			setTimeout(() => (this.$router.push('cadastro3')), 2000);
 		},
+		sem_numero_checkbox_update() {
+			if (this.sem_numero_checkbox) {
+				this.numero = 'Sem número';
+			} else {
+				this.numero = null;
+			}
+		},
+		cep_search(){return true}
 	}
 }
 </script>
