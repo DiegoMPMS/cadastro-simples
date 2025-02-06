@@ -1,19 +1,5 @@
 <template>
-	<v-app>
-		<v-app-bar>
-			<!-- Titulo da barra de navegação no topo -->
-			<v-app-bar-title>Página de Cadastro</v-app-bar-title>
-		</v-app-bar>
-		<v-main>
-			<v-sheet class="bg-light-blue pa-12" rounded>
-				<v-card class="mx-auto px-6 py-8">
 
-					<!-- Migalhas de pão usadas para indicar a etapa do cadastro, talvez exista um solução mais elegante -->
-					<v-breadcrumbs :items="items">
-						<template v-slot:divider>
-							<v-icon icon="mdi-chevron-right"></v-icon>
-						</template>
-					</v-breadcrumbs>
 					<!-- Formulário de inscrição -->
 					<v-form v-model="form" @submit.prevent="onSubmit">
 
@@ -83,11 +69,6 @@
 						<v-btn :disabled="!form" :loading="loading" color="success" size="large" type="submit"
 							block>Cadastrar</v-btn>
 					</v-form>
-				</v-card>
-			</v-sheet>
-		</v-main>
-	</v-app>
-
 
 </template>
 
@@ -126,23 +107,7 @@ export default {
 				return pattern.test(value) || 'CPF em formato inválido'
 			}
 		},
-		// usado pelas migalhas para mostrar a etapa do cadastro
-		items: [
-			{
-				title: 'Dados Pessoais',
-				disabled: false,
 
-			},
-			{
-				title: 'Endereço',
-				disabled: true,
-
-			}, {
-				title: 'Documentos',
-				disabled: true,
-
-			},
-		]
 	}),
 	methods: {
 		onSubmit() {

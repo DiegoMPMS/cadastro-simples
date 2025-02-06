@@ -115,6 +115,7 @@ export default {
 			{
 				title: 'Dados Pessoais',
 				disabled: false,
+				href: "cadastro_dados",
 			},
 			{
 				title: 'Endereço',
@@ -145,10 +146,10 @@ export default {
 				this.numero_field_variant = 'filled';
 			}
 		},
-		cep_search() {
+		async cep_search() {
 			// TODO - toda vez que o campo é preenchido ou sai de foco a função é chamada, adicionar código para realizar chamada apenas se o conteúdo tiver mudado
 			var cep_temp = this.cep.replace(/[-]/, "");
-
+			
 			await fetch('https://brasilapi.com.br/api/cep/v1/' + cep_temp)
 				.then(response => {
 					if (!response.ok) {
@@ -166,6 +167,8 @@ export default {
 					this.estado = data.state;
 					return true
 				})
+
+
 				console.log('mensagem: '+msg)
 				return msg
 		},
