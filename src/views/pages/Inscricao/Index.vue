@@ -11,7 +11,7 @@
           <!-- Migalhas de pão usadas para indicar a etapa do cadastro, talvez exista um solução mais elegante -->
           <v-breadcrumbs :items="items">
             <template v-slot:title="{ item }">
-              <span class="item-bread" :class="router.meta.router == item.route_name ? 'text-blue' : ''"
+              <span class="item-bread" :class="$route.name == item.route_name ? 'item-current-route' : ''"
                 @click="redirected(item.route_name)">{{ item.title }}</span>
             </template>
             <template v-slot:divider>
@@ -28,11 +28,10 @@
 </template>
 <script>
 export default {
-  name: 'Inscricao',
   data() {
     // usado pelas migalhas para mostrar a etapa do cadastro
     return {
-      router: this.$router.currentRoute,
+      rota_atual: this.$route.name,
       items: [
         {
           title: 'Dados Pessoais',
@@ -67,6 +66,9 @@ export default {
 .item-bread:hover {
   cursor: pointer;
   text-decoration: underline;
-  color: #0592d3;
+  /* color: #0592d3; */
+}
+.item-current-route {
+  font-weight: 800;
 }
 </style>

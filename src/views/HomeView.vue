@@ -5,6 +5,6 @@ import TheWelcome from '../components/TheWelcome.vue'
 <template>
   <main>
     <TheWelcome />
-    <RouterLink to="inscricao" > Ir para Inscrição </RouterLink>
+    <RouterLink :to="{name:'inscricao'}" > Ir para Inscrição </RouterLink>
   </main>
 </template>
