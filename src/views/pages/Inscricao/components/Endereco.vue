@@ -127,6 +127,10 @@ export default {
 					if (!response.ok) {
 						if (response.status == '404') {
 							this.msg_search = 'CEP não encontrado';
+							this.logradouro = null;
+							this.bairro = null;
+							this.cidade = null;
+							this.estado = null;
 						}
 					} else {
 						return response.json();
