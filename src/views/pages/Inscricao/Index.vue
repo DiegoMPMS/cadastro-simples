@@ -37,19 +37,16 @@ export default {
           title: 'Dados Pessoais',
           disabled: false,
           route_name: 'cadastro_dados',
-          active: false,
         },
         {
           title: 'Endereço',
           disabled: false,
           route_name: 'cadastro_endereco',
-          active: false,
         },
         {
           title: 'Documentos',
           disabled: true,
           route_name: 'cadastro_documentos',
-          active: false,
         },
       ],
     }
