@@ -7,7 +7,7 @@
 			<v-row>
 				<v-col cols="12" sm="6">
 					<v-file-input v-model="arquivos.doc_pessoal_com_foto" label="Documento pessoal com foto"
-						accept="application/.pdf" :rules="[rules.file_size_limit, rules.required]" clearable show-size
+						accept="application/.pdf" :rules="[rules.required, rules.file_size_limit]" clearable show-size
 						hint="* obrigatório" persistent-hint>
 						<template v-slot:append-inner>
 							<v-tooltip location="bottom">
@@ -28,7 +28,7 @@
 				</v-col>
 				<v-col>
 					<v-file-input v-model="arquivos.cert_quitacao_eleitoral" label="Certidão de quitação eleitoral"
-						accept="application/.pdf" :rules="[rules.file_size_limit, rules.required]" clearable show-size
+						accept="application/.pdf" :rules="[rules.required, rules.file_size_limit]" clearable show-size
 						hint="* obrigatório" persistent-hint>
 						<template v-slot:append-inner>
 							<v-tooltip location="bottom">
@@ -45,8 +45,8 @@
 			<v-row>
 				<v-col>
 					<v-file-input v-model="arquivos.certidao_antecedentes_criminais" label="Certidão de antecedentes criminais"
-						accept="application/.pdf" :rules="[rules.file_size_limit, rules.required]" clearable show-size hint="* obrigatório"
-						persistent-hint>
+						accept="application/.pdf" :rules="[rules.required, rules.file_size_limit]" clearable show-size
+						hint="* obrigatório" persistent-hint>
 						<template v-slot:append-inner>
 							<v-tooltip location="bottom">
 								<template v-slot:activator="{ props }">
@@ -133,8 +133,17 @@ export default {
 		loading: false,
 		// Regras de validação para o formulário
 		rules: {
-			required: value => !!value || 'Campo Obrigatório.',
-			file_size_limit: value => !!value || 'Campo Obrigatório.',
+			required: value => value.length > 0 || 'Campo Obrigatório.',
+			file_size_limit: value => {
+				if (value.length) {
+					if (parseInt(value[0].size) < 2000000) {
+						return true;
+					} else {
+						return 'Arquivo muito grande, tamanho limite do arquivo é 2MB';
+					}
+				}else return 'Arquivo não recebido'
+
+			},
 		},
 	}),
 	methods: {
