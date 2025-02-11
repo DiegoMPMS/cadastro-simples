@@ -91,9 +91,7 @@ export default {
 				return pattern.test(value) || 'CEP em formato inválido'
 			},
 		},
-
 	}),
-
 	methods: {
 		onSubmit() {
 			if (!this.form) return
@@ -143,6 +141,7 @@ export default {
 						this.cidade = data.city;
 						this.estado = data.state;
 						this.msg_search = true;
+						this.cep = cep_temp.substring(0,5) + '-' + cep_temp.substring(5,8)
 					}
 				})
 				return this.msg_search;

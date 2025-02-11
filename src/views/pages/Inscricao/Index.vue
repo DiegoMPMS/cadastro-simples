@@ -31,32 +31,51 @@ export default {
   data() {
     // usado pelas migalhas para mostrar a etapa do cadastro
     return {
+      teste: 'teste',
       rota_atual: this.$route.name,
       items: [
         {
           title: 'Dados Pessoais',
-          disabled: false,
+          disabled: true,
           route_name: 'cadastro_dados',
+          step: 1,
         },
         {
           title: 'Endereço',
-          disabled: false,
+          disabled: true,
           route_name: 'cadastro_endereco',
+          step: 2,
         },
         {
           title: 'Documentos',
           disabled: true,
           route_name: 'cadastro_documentos',
+          step: 3,
         },
       ],
+      route_order: ['cadastro_dados', 'cadastro_endereco', 'cadastro_documentos'],
     }
   },
-  methods: {
+  mounted: function () {
+    // uma forma meio feia de desativar opções futuras do cadastro, o ideal será usar o pinia
+    // usando o pinia o cadastro terá elementos em memoria para saber a etapa e poder avançar e voltar, para etapas já concluídas
+    this.whereAmI();
+  },
+    methods: {
     redirected(value) {
       this.$router.push({ name: value });
+    },
+    whereAmI() {
+      for (let index = 0; index < this.items.length; index++) {
+      const element = this.items[index];
+      console.log(parseInt(element.step));
+      console.log(parseInt(this.currentStep));
+      if (this.route_order.indexOf(this.rota_atual)+1 >= parseInt(element.step)){
+        element.disabled = false;
+      }
     }
-  }
-
+    }
+  },
 }
 </script>
 <style>
