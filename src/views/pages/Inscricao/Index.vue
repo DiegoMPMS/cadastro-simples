@@ -59,7 +59,7 @@ export default {
   mounted: function () {
     // uma forma meio feia de desativar opções futuras do cadastro, o ideal será usar o pinia
     // usando o pinia o cadastro terá elementos em memoria para saber a etapa e poder avançar e voltar, para etapas já concluídas
-    this.whereAmI();
+    //this.whereAmI();
   },
     methods: {
     redirected(value) {

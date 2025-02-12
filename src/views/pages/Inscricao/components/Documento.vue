@@ -146,6 +146,9 @@ export default {
 			},
 		},
 	}),
+	updated: function(){
+		this.$emit('whereAmI');
+	},
 	methods: {
 		onSubmit() {
 			if (!this.form) return
