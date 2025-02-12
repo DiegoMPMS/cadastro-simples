@@ -26,7 +26,7 @@
 						</template>
 					</v-file-input>
 				</v-col>
-				<v-col>
+				<v-col cols="12" sm="6">
 					<v-file-input v-model="arquivos.cert_quitacao_eleitoral" label="Certidão de quitação eleitoral"
 						accept="application/.pdf" :rules="[rules.required, rules.file_size_limit]" clearable show-size
 						hint="* obrigatório" persistent-hint>
@@ -43,7 +43,7 @@
 			</v-row>
 
 			<v-row>
-				<v-col>
+				<v-col cols="12" sm="6">
 					<v-file-input v-model="arquivos.certidao_antecedentes_criminais" label="Certidão de antecedentes criminais"
 						accept="application/.pdf" :rules="[rules.required, rules.file_size_limit]" clearable show-size
 						hint="* obrigatório" persistent-hint>
@@ -57,7 +57,7 @@
 						</template>
 					</v-file-input>
 				</v-col>
-				<v-col>
+				<v-col cols="12" sm="6">
 					<v-file-input v-model="arquivos.reservista_dispensa"
 						label="Certificado de reservista / Dispensa de incorporação" accept="application/.pdf"
 						:rules="[rules.file_size_limit]" clearable show-size>
@@ -74,7 +74,7 @@
 			</v-row>
 
 			<v-row>
-				<v-col>
+				<v-col cols="12" sm="6">
 					<v-file-input v-model="arquivos.relatorio_medico" label="Relatório médico" accept="application/.pdf"
 						:rules="[rules.file_size_limit]" clearable show-size>
 						<template v-slot:append-inner>
@@ -87,7 +87,7 @@
 						</template>
 					</v-file-input>
 				</v-col>
-				<v-col>
+				<v-col cols="12" sm="6">
 					<v-file-input v-model="arquivos.declaracao_afrodescendencia"
 						label="Certidão de auto declaração de afrodescendência" accept="application/.pdf"
 						:rules="[rules.file_size_limit]" clearable show-size>
