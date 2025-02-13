@@ -106,12 +106,15 @@
 		</v-container>
 
 		<v-btn :disabled="!form" :loading="loading" color="success" size="large" type="submit" block>Cadastrar</v-btn>
+		<v-btn class="mt-2" color="alert" size="large" @click="store.increment" block>testar pinia no filho</v-btn>
 	</v-form>
 
 
 </template>
 
 <script setup>
+import { useCadastroStore } from '@/stores/cadastro';
+const store = useCadastroStore();
 </script>
 
 <script>
@@ -128,8 +131,6 @@ export default {
 			cert_quitacao_eleitoral: null,
 			declaracao_afrodescendencia: null,
 		},
-
-
 		loading: false,
 		// Regras de validação para o formulário
 		rules: {
@@ -142,13 +143,10 @@ export default {
 						return 'Arquivo muito grande, tamanho limite do arquivo é 2MB';
 					}
 				}else return 'Arquivo não recebido'
-
 			},
 		},
 	}),
-	updated: function(){
-		this.$emit('whereAmI');
-	},
+	
 	methods: {
 		onSubmit() {
 			if (!this.form) return
