@@ -12,4 +12,5 @@ export const useCadastroStore = defineStore('cadastro', {
       this.count++;
     }
   },
+  persist: true,
 });
