@@ -19,7 +19,6 @@
           </v-breadcrumbs>
           <RouterView />
         </v-card>
-        <v-btn class="mt-2" color="alert" size="large" @click="store.increment" block>testar pinia no pai</v-btn>
       </v-sheet>
     </v-main>
   </v-app>

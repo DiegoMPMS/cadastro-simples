@@ -16,10 +16,6 @@ export const useCadastroStore = defineStore('cadastro', {
   // getters => computed
   getters: {},
   // actions => methods 
-  actions: {
-    increment() {
-      this.count++;
-    }
-  },
+  actions: {},
   persist: true,
 });
