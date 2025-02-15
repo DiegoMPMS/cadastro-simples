@@ -80,16 +80,7 @@ import { useCadastroStore } from '@/stores/cadastro';
 export default {
 	data: () => ({
 		form: false,
-		// cada field do formulário deve conter sua vária declara no script
-		// o nome do variável é 'linkado' usando v-model="nome_da_variável"
-		nome: null,
-		sobrenome: null,
-		nomeSocial: null,
-		cpf: null,
-		email: null,
-		password: null,
-		password_confirmation: null,
-
+		
 		loading: false,
 		// Regras de validação para o formulário
 		rules: {
