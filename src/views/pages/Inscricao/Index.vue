@@ -8,7 +8,6 @@
       <v-sheet class="bg-light-blue pa-12" rounded>
         <v-card class="mx-auto px-6 py-8">
           <!-- Migalhas de pão usadas para indicar a etapa do cadastro, talvez exista um solução mais elegante -->
-           {{ store.count }}
           <v-breadcrumbs :items="items">
             <template v-slot:title="{ item }">
               <span class="item-bread" :class="$route.name == item.route_name ? 'item-current-route' : ''"

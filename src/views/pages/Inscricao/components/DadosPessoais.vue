@@ -9,18 +9,18 @@
 								<!-- Se eu estiver entendo isso corretamente cols divide a linha em 12 "blocos" e sm indica quantos blocos tem ESSA coluna -->
 								<!-- tentei alterar o valor de 'sm' não vi mudança visual -->
 								<v-col cols="12" sm="6">
-									<v-text-field v-model="nome" :readonly="loading" :rules="[rules.required]" label="Nome"
+									<v-text-field v-model="store.nome" :readonly="loading" :rules="[rules.required]" label="Nome"
 										clearable></v-text-field>
 								</v-col>
 								<v-col cols="12" sm="6">
-									<v-text-field v-model="sobrenome" :readonly="loading" :rules="[rules.required]" label="Sobrenome"
+									<v-text-field v-model="store.sobrenome" :readonly="loading" :rules="[rules.required]" label="Sobrenome"
 										clearable></v-text-field>
 								</v-col>
 							</v-row>
 
 							<v-row class="mb-2">
 								<v-col cols="12" sm="6">
-									<v-text-field v-model="nomeSocial" :readonly="loading" label="Nome Social" clearable>
+									<v-text-field v-model="store.nomeSocial" :readonly="loading" label="Nome Social" clearable>
 										<template v-slot:append-inner>
 											<v-tooltip location="bottom">
 												<template v-slot:activator="{ props }">
@@ -35,7 +35,7 @@
 									</v-text-field>
 								</v-col>
 								<v-col cols="12" sm="6">
-									<v-text-field v-model="cpf" :readonly="loading" :rules="[rules.required, rules.cpf_format, cpf_valid]" label="CPF"
+									<v-text-field v-model="store.cpf" :readonly="loading" :rules="[rules.required, rules.cpf_format, cpf_valid]" label="CPF"
 										placeholder="XXX.XXX.XXX-XX" maxlength="14"></v-text-field>
 								</v-col>
 							</v-row>
@@ -46,7 +46,7 @@
 						<v-container>
 							<v-row>
 								<v-col cols="12" sm="12">
-									<v-text-field v-model="email" :readonly="loading" :rules="[rules.required, rules.email]" label="Email"
+									<v-text-field v-model="store.email" :readonly="loading" :rules="[rules.required, rules.email]" label="Email"
 										clearable></v-text-field>
 								</v-col>
 
@@ -54,12 +54,12 @@
 
 							<v-row>
 								<v-col cols="12" sm="6">
-									<v-text-field v-model="password" type="password" :readonly="loading"
+									<v-text-field v-model="store.password" type="password" :readonly="loading"
 										:rules="[rules.required, rules.comprimento_senha]" label="Senha" placeholder="Digite sua senha"
 										clearable></v-text-field>
 								</v-col>
 								<v-col>
-									<v-text-field v-model="password_confirmation" type="password" :readonly="loading"
+									<v-text-field v-model="store.password_confirmation" type="password" :readonly="loading"
 										:rules="[rules.required, rules.comprimento_senha, password_match]" label="Confirmar Senha"
 										placeholder="Digite sua senha" clearable></v-text-field>
 								</v-col>
@@ -73,6 +73,7 @@
 </template>
 
 <script setup>
+import { useCadastroStore } from '@/stores/cadastro';
 </script>
 
 <script>
@@ -107,8 +108,10 @@ export default {
 				return pattern.test(value) || 'CPF em formato inválido'
 			}
 		},
-
 	}),
+	computed:{
+	store: () => useCadastroStore()
+	},
 	methods: {
 		onSubmit() {
 			if (!this.form) return
@@ -121,41 +124,40 @@ export default {
 			setTimeout(() => (this.$router.push({name:'cadastro_endereco'})), 2000)	
 		},
 		password_match() {
-			if (this.password === this.password_confirmation) {
+			if (this.store.password === this.store.password_confirmation) {
 				return true;
 			} else {return 'Senhas não conferem'}
 		},
 		cpf_valid(){
-			var cpf_temp = this.cpf;
+			var cpf_temp = this.store.cpf;
+			
 			cpf_temp = cpf_temp.replace(/[^\d]/g, "");
-			console.log('temp:' + cpf_temp);
 
 			// primeira condição de falha do validador não é encontrada com operações matemáticas.
-			if (cpf_temp == '00000000000') return 'CPF inválido1';
+			if (cpf_temp == '00000000000') return 'CPF inválido';
 
 			var soma = 0;
-			var resto = 0;
-			console.log('temp2: ' + cpf_temp)
+			var verificador = 0;
 
-			for (let i=1; i<=9; i++) soma = soma + parseInt(cpf_temp.substring(i-1,i)) * (11-1);
-			resto = (soma * 10) % 11;
+			for (let i=1; i<=9; i++) soma = soma + parseInt(cpf_temp.substring(i-1,i)) * (11-i);
+			verificador = 11-(soma % 11);
 
 
 			// validar primeiro digito verificador
-			if (resto == 10) resto = 0;
-			if (resto != parseInt(cpf_temp.substring(9,10))) return 'CPF inválido2';
+			if (verificador == 10) verificador = 0;
+			if (verificador != parseInt(cpf_temp.substring(9,10))) return 'CPF inválido2';
 			
 			soma = 0;
-			for (let i=1; i<10; i++) soma = soma + parseInt(cpf_temp.substring(i-1,i)) * (12-1);
-			resto = (soma * 10) % 11;
+			for (let i=1; i<=10; i++) soma = soma + parseInt(cpf_temp.substring(i-1,i)) * (12-i);
+			verificador = 11-(soma % 11);
 
 			// validar segundo digito verificador
-			if (resto == 10) resto = 0;
-			if (resto != parseInt(cpf_temp.substring(10,11))) return 'CPF inválido3';
+			if (verificador == 10) verificador = 0;
+			if (verificador != parseInt(cpf_temp.substring(10,11))) return 'CPF inválido3';
 
 			//aplicar pontos e barra no cpf
-			console.log('done')
-			this.cpf = cpf_temp.substring(0,3) + '.' + cpf_temp.substring(3,6) + '.' + cpf_temp.substring(6,9) + '-' + cpf_temp.substring(9,11);
+			//console.log('done')
+			this.store.cpf = cpf_temp.substring(0,3) + '.' + cpf_temp.substring(3,6) + '.' + cpf_temp.substring(6,9) + '-' + cpf_temp.substring(9,11);
 			return true
 		}                                                                    
 	}

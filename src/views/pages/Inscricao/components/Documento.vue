@@ -4,6 +4,7 @@
 	<v-form v-model="form" @submit.prevent="onSubmit">
 
 		<v-container>
+			{{ store }}
 			<v-row>
 				<v-col cols="12" sm="6">
 					<v-file-input v-model="arquivos.doc_pessoal_com_foto" label="Documento pessoal com foto"
@@ -106,7 +107,7 @@
 		</v-container>
 
 		<v-btn :disabled="!form" :loading="loading" color="success" size="large" type="submit" block>Cadastrar</v-btn>
-		<v-btn class="mt-2" color="alert" size="large" @click="store.increment" block>testar pinia no filho</v-btn>
+		
 	</v-form>
 
 
@@ -146,7 +147,7 @@ export default {
 			},
 		},
 	}),
-	
+
 	methods: {
 		onSubmit() {
 			if (!this.form) return
