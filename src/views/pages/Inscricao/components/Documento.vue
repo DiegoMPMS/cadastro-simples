@@ -4,10 +4,9 @@
 	<v-form v-model="form" @submit.prevent="onSubmit">
 
 		<v-container>
-			{{ store }}
 			<v-row>
 				<v-col cols="12" sm="6">
-					<v-file-input v-model="arquivos.doc_pessoal_com_foto" label="Documento pessoal com foto"
+					<v-file-input v-model="store.arquivos.doc_pessoal_com_foto" label="Documento pessoal com foto"
 						accept="application/.pdf" :rules="[rules.required, rules.file_size_limit]" clearable show-size
 						hint="* obrigatório" persistent-hint>
 						<template v-slot:append-inner>
@@ -28,7 +27,7 @@
 					</v-file-input>
 				</v-col>
 				<v-col cols="12" sm="6">
-					<v-file-input v-model="arquivos.cert_quitacao_eleitoral" label="Certidão de quitação eleitoral"
+					<v-file-input v-model="store.arquivos.cert_quitacao_eleitoral" label="Certidão de quitação eleitoral"
 						accept="application/.pdf" :rules="[rules.required, rules.file_size_limit]" clearable show-size
 						hint="* obrigatório" persistent-hint>
 						<template v-slot:append-inner>
@@ -45,7 +44,7 @@
 
 			<v-row>
 				<v-col cols="12" sm="6">
-					<v-file-input v-model="arquivos.certidao_antecedentes_criminais" label="Certidão de antecedentes criminais"
+					<v-file-input v-model="store.arquivos.certidao_antecedentes_criminais" label="Certidão de antecedentes criminais"
 						accept="application/.pdf" :rules="[rules.required, rules.file_size_limit]" clearable show-size
 						hint="* obrigatório" persistent-hint>
 						<template v-slot:append-inner>
@@ -59,7 +58,7 @@
 					</v-file-input>
 				</v-col>
 				<v-col cols="12" sm="6">
-					<v-file-input v-model="arquivos.reservista_dispensa"
+					<v-file-input v-model="store.arquivos.reservista_dispensa"
 						label="Certificado de reservista / Dispensa de incorporação" accept="application/.pdf"
 						:rules="[rules.file_size_limit]" clearable show-size>
 						<template v-slot:append-inner>
@@ -76,7 +75,7 @@
 
 			<v-row>
 				<v-col cols="12" sm="6">
-					<v-file-input v-model="arquivos.relatorio_medico" label="Relatório médico" accept="application/.pdf"
+					<v-file-input v-model="store.arquivos.relatorio_medico" label="Relatório médico" accept="application/.pdf"
 						:rules="[rules.file_size_limit]" clearable show-size>
 						<template v-slot:append-inner>
 							<v-tooltip location="bottom">
@@ -89,7 +88,7 @@
 					</v-file-input>
 				</v-col>
 				<v-col cols="12" sm="6">
-					<v-file-input v-model="arquivos.declaracao_afrodescendencia"
+					<v-file-input v-model="store.arquivos.declaracao_afrodescendencia"
 						label="Certidão de auto declaração de afrodescendência" accept="application/.pdf"
 						:rules="[rules.file_size_limit]" clearable show-size>
 						<template v-slot:append-inner>
@@ -124,14 +123,7 @@ export default {
 		form: false,
 		// cada field do formulário deve conter sua vária declara no script
 		// o nome do variável é 'linkado' usando v-model="nome_da_variável"
-		arquivos: {
-			doc_pessoal_com_foto: null,
-			cert_quitacao_eleitoral: null,
-			certidao_antecedentes_criminais: null,
-			reservista_dispensa: null,
-			cert_quitacao_eleitoral: null,
-			declaracao_afrodescendencia: null,
-		},
+		
 		loading: false,
 		// Regras de validação para o formulário
 		rules: {
@@ -147,7 +139,9 @@ export default {
 			},
 		},
 	}),
-
+	computed:{
+	store: () => useCadastroStore()
+	},
 	methods: {
 		onSubmit() {
 			if (!this.form) return
