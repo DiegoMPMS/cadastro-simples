@@ -54,7 +54,7 @@
 
 		</v-container>
 
-		<v-btn :disabled="!form" :loading="loading" color="success" size="large" type="submit" block>Cadastrar</v-btn>
+		<v-btn :disabled="!form" :loading="loading" color="success" size="large" type="submit" block>Prosseguir</v-btn>
 	</v-form>
 
 </template>

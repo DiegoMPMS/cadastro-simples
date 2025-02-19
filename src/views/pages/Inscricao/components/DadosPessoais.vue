@@ -9,7 +9,7 @@
 								<!-- Se eu estiver entendo isso corretamente cols divide a linha em 12 "blocos" e sm indica quantos blocos tem ESSA coluna -->
 								<!-- tentei alterar o valor de 'sm' não vi mudança visual -->
 								<v-col cols="12" sm="6">
-									<v-text-field v-model="store.nome" :readonly="loading" :rules="[rules.required]" label="Nome"
+									<v-text-field v-model="store.name" :readonly="loading" :rules="[rules.required]" label="Nome"
 										clearable></v-text-field>
 								</v-col>
 								<v-col cols="12" sm="6">
@@ -67,7 +67,7 @@
 						</v-container>
 
 						<v-btn :disabled="!form" :loading="loading" color="success" size="large" type="submit"
-							block>Cadastrar</v-btn>
+							block>Prosseguir</v-btn>
 					</v-form>
 
 </template>
