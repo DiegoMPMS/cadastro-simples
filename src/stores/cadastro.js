@@ -6,7 +6,7 @@ export const useCadastroStore = defineStore('cadastro', {
   state: () => ({
     //Cadastro - Dados Pessoais 
     step: 0, 
-    nome: null,
+    name: null,
 		sobrenome: null,
 		nomeSocial: null,
 		cpf: null,
@@ -32,7 +32,11 @@ export const useCadastroStore = defineStore('cadastro', {
     //Documentos são o ultimo passo e são enviados diretamente ao servidor
   }),
   // getters => computed
-  getters: {},
+  getters: {
+    info_cadastro_json(){
+      return JSON.stringify(this.state)
+    }
+  },
   // actions => methods 
   actions: {},
   persist: true,
