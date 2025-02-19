@@ -70,7 +70,7 @@ export default {
 			// e provavelmente um acesso ao VUE storage pra guardar as informações caso seja necessário voltar ou reiniciar o formulário
 			// por enquanto esperamos alguns segundos e seguimos para a próxima página.
 			//setTimeout(2000);
-			this.loading = true
+			this.loading = false
 		},
 		// async para enviar documentos, devido ao possível limite de post de 2megabytes,
 		// cada arquivo tera um limite de 2.000 bytes e o resto do post deve caber no espaço restante
