@@ -44,9 +44,9 @@
 
 			<v-row>
 				<v-col cols="12" sm="6">
-					<v-file-input v-model="store.arquivos.certidao_antecedentes_criminais" label="Certidão de antecedentes criminais"
-						accept="application/.pdf" :rules="[rules.required, rules.file_size_limit]" clearable show-size
-						hint="* obrigatório" persistent-hint>
+					<v-file-input v-model="store.arquivos.certidao_antecedentes_criminais"
+						label="Certidão de antecedentes criminais" accept="application/.pdf"
+						:rules="[rules.required, rules.file_size_limit]" clearable show-size hint="* obrigatório" persistent-hint>
 						<template v-slot:append-inner>
 							<v-tooltip location="bottom">
 								<template v-slot:activator="{ props }">
@@ -106,7 +106,7 @@
 		</v-container>
 
 		<v-btn :disabled="!form" :loading="loading" color="success" size="large" type="submit" block>Cadastrar</v-btn>
-		
+
 	</v-form>
 
 
@@ -123,7 +123,7 @@ export default {
 		form: false,
 		// cada field do formulário deve conter sua vária declara no script
 		// o nome do variável é 'linkado' usando v-model="nome_da_variável"
-		
+
 		loading: false,
 		// Regras de validação para o formulário
 		rules: {
@@ -135,12 +135,12 @@ export default {
 					} else {
 						return 'Arquivo muito grande, tamanho limite do arquivo é 2MB';
 					}
-				}else return 'Arquivo não recebido'
+				} else return 'Arquivo não recebido'
 			},
 		},
 	}),
-	computed:{
-	store: () => useCadastroStore()
+	computed: {
+		store: () => useCadastroStore()
 	},
 	methods: {
 		onSubmit() {
