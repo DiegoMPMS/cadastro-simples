@@ -10,78 +10,98 @@
           <!-- Migalhas de pão usadas para indicar a etapa do cadastro, talvez exista um solução mais elegante -->
           <v-breadcrumbs :items="items">
             <template v-slot:title="{ item }">
-              <span class="item-bread" :class="$route.name == item.route_name ? 'item-current-route' : ''"
+              <span class="item-bread" :class="route.name == item.route_name ? 'item-current-route' : ''"
                 @click="redirected(item.route_name)">{{ item.title }}</span>
             </template>
             <template v-slot:divider>
               <v-icon icon="mdi-chevron-right"></v-icon>
             </template>
           </v-breadcrumbs>
-          <RouterView />
+          <!--  <RouterView />  -->
+          <DadosPessoais v-if="store.step == 1" />
+          <Endereco v-if="store.step == 2" />
+          <Documento v-if="store.step == 3" />
         </v-card>
       </v-sheet>
     </v-main>
   </v-app>
+
 </template>
 
-<script setup>
-import { useCadastroStore } from '@/stores/cadastro';
-const store = useCadastroStore();
-</script>
-
 <script>
+import { useCadastroStore } from '@/stores/cadastro'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+
+// Importando as crianças
+import DadosPessoais from './components/DadosPessoais.vue'
+import Endereco from './components/Endereco.vue'
+import Documento from './components/Documento.vue'
+
 export default {
-  data() {
-    // usado pelas migalhas para mostrar a etapa do cadastro
-    return {
-      items: [
-        {
-          title: 'Dados Pessoais',
-          disabled: true,
-          route_name: 'cadastro_dados',
-          step: 1,
-        },
-        {
-          title: 'Endereço',
-          disabled: true,
-          route_name: 'cadastro_endereco',
-          step: 2,
-        },
-        {
-          title: 'Documentos',
-          disabled: true,
-          route_name: 'cadastro_documentos',
-          step: 3,
-        },
-      ],
-      route_order: ['cadastro_dados', 'cadastro_endereco', 'cadastro_documentos'],
+  props: {},
+  emits: [],
+  components: { DadosPessoais, Endereco, Documento },
+  setup(props, { emit }) {
+
+    // --- DATA ---
+    const router = useRouter()
+    const route = useRoute()
+    const store = useCadastroStore()
+    const items = ref([
+      {
+        title: 'Dados Pessoais',
+        disabled: true,
+        route_name: 'cadastro_dados',
+        step: 1,
+      },
+      {
+        title: 'Endereço',
+        disabled: true,
+        route_name: 'cadastro_endereco',
+        step: 2,
+      },
+      {
+        title: 'Documentos',
+        disabled: true,
+        route_name: 'cadastro_documentos',
+        step: 3,
+      },
+    ])
+
+
+    const route_order = ['cadastro_dados', 'cadastro_endereco', 'cadastro_documentos']
+    // --- WATCHERS ---
+    watch(route, (to, from) => {
+      whereAmI();
+    })
+    // --- MOUNTED LIFECYCLE HOOK --- 
+    onMounted(() => {
+      whereAmI();
+    })
+    // --- METHODS ---
+    const redirected = (value) => {
+      router.push({ name: value });
     }
-  },
-  watch: {
-    $route(to, from) {
-      this.whereAmI();
-    }
-  },
-  mounted: function () {
-    // uma forma meio feia de desativar opções futuras do cadastro, o ideal será usar o pinia
-    // usando o pinia o cadastro terá elementos em memoria para saber a etapa e poder avançar e voltar, para etapas já concluídas
-    this.whereAmI();
-  },
-  methods: {
-    redirected(value) {
-      this.$router.push({ name: value });
-    },
-    whereAmI() {
+    const whereAmI = () => {
       // a função é chamada ma vez no evento de mounted() e chamada sempre que a rota muda, usando um watcher
-      for (let index = 0; index < this.items.length; index++) {
-        const element = this.items[index];
-        if (this.route_order.indexOf(this.$route.name) + 1 >= parseInt(element.step)) {
+      for (let index = 0; index < items.value.length; index++) {
+        const element = items.value[index];
+        if (route_order.indexOf(route.name) + 1 >= parseInt(element.step)) {
           element.disabled = false;
         } else {
           element.disabled = true;
         }
       }
-    },
+    }
+    return {
+      Documento,
+      items,
+      redirected,
+      store,
+      route,
+    }
+
   },
 }
 </script>

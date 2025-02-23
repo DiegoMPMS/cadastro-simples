@@ -9,7 +9,7 @@
 			<!-- tentei alterar o valor de 'sm' não vi mudança visual -->
 			<v-row>
 				<v-col cols="12" sm="6">
-					<v-text-field v-model="store.cep" :readonly="loading" :rules="[rules.required, rules.cep_format, cep_search]"
+					<v-text-field v-model="item.cep" :readonly="loading" :rules="[rules.required, rules.cep_format, cep_search]"
 						label="CEP" maxlength="9" clearable></v-text-field>
 				</v-col>
 				<!-- Mover para dentro do campo de número, espaçamento do elemento na tela deixa ele desconexo do campo de 'Número' -->
@@ -21,33 +21,33 @@
 
 			<v-row>
 				<v-col cols="12" sm="6">
-					<v-text-field v-model="store.logradouro" :readonly="loading" :rules="[rules.required]" label="Logradouro"
+					<v-text-field v-model="item.logradouro" :readonly="loading" :rules="[rules.required]" label="Logradouro"
 						clearable></v-text-field>
 				</v-col>
 				<v-col cols="12" sm="6">
-					<v-text-field v-model="store.numero" :readonly="loading || sem_numero_checkbox" :rules="[rules.required]"
+					<v-text-field v-model="item.numero" :readonly="loading || sem_numero_checkbox" :rules="[rules.required]"
 						label="Número" :variant="numero_field_variant"></v-text-field>
 				</v-col>
 			</v-row>
 
 			<v-row>
 				<v-col cols="12" sm="12">
-					<v-text-field v-model="store.complemento" :readonly="loading" :rules="[rules.required]" label="Complemento"
+					<v-text-field v-model="item.complemento" :readonly="loading" label="Complemento"
 						clearable></v-text-field>
 				</v-col>
 			</v-row>
 
 			<v-row>
 				<v-col cols="12" sm="4">
-					<v-text-field v-model="store.bairro" :readonly="loading" :rules="[rules.required]" label="Bairro"
+					<v-text-field v-model="item.bairro" :readonly="loading" :rules="[rules.required]" label="Bairro"
 						clearable></v-text-field>
 				</v-col>
 				<v-col cols="12" sm="4">
-					<v-text-field v-model="store.cidade" :readonly="loading" :rules="[rules.required]" label="Cidade"
+					<v-text-field v-model="item.cidade" :readonly="loading" :rules="[rules.required]" label="Cidade"
 						clearable></v-text-field>
 				</v-col>
 				<v-col cols="12" sm="4">
-					<v-text-field v-model="store.estado" :readonly="loading" :rules="[rules.required]" label="Estado"
+					<v-text-field v-model="item.estado" :readonly="loading" :rules="[rules.required]" label="Estado"
 						clearable></v-text-field>
 				</v-col>
 			</v-row>
@@ -59,88 +59,105 @@
 
 </template>
 
-<script setup>
-import { useCadastroStore } from '@/stores/cadastro';
-</script>
-
 <script>
-export default {
-	data: () => ({
-		form: false,
-		// cada field do formulário deve conter sua vária declara no script
-		// o nome do variável é 'linkado' usando v-model="nome_da_variável"
-		sem_numero_checkbox: null,
-		numero_field_variant: 'filled',
-		old_cep: null,
-		msg_search: null,
+import { useCadastroStore } from '@/stores/cadastro';
+import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
-		loading: false,
-		// Regras de validação para o formulário
-		rules: {
+export default {
+	props: {},
+	emits: [],
+
+	setup(props, { emit }) {
+		// DATA
+		const store = useCadastroStore()
+		const router = useRouter()
+		const form = ref(false)
+		const loading = ref(false)
+		const item = ref(store.form)
+		const sem_numero_checkbox = ref(null)
+		const numero_field_variant = ref('filled');
+		const old_cep = ref(null)
+		const msg_search = ref(null)
+
+		const rules = {
 			required: value => !!value || 'Campo Obrigatório.',
 			cep_format: value => {
 				const pattern = /([0-9]{5}[-]?[0-9]{3})/
 				return pattern.test(value) || 'CEP em formato inválido'
 			},
-		},
-	}),
-	computed:{
-	store: () => useCadastroStore()
-	},
-	methods: {
-		onSubmit() {
-			if (!this.form) return
+		}
 
-			this.loading = true
+		// METHODS
+		const onSubmit = () => {
+			if (!form) return
+
+			loading.value = true
 			// aqui deveria estar a chama da API para realizar o cadastro com os dados iniciais, e a espera pela resposta para seguir ao próximo passo 
 			// e provavelmente um acesso ao VUE storage pra guardar as informações caso seja necessário voltar ou reiniciar o formulário
 			// por enquanto esperamos alguns segundos e seguimos para a próxima página.
-			setTimeout(() => (this.$router.push({name:'cadastro_documentos'})), 2000);
-		},
-		sem_numero_checkbox_update() {
-			if (this.sem_numero_checkbox) {
-				this.store.numero = 'Sem número';
-				this.numero_field_variant = 'outlined';
-			} else {
-				this.store.numero = null;
-				this.numero_field_variant = 'filled';
-			}
-		},
-		async cep_search() {
-			// TODO - toda vez que o campo é preenchido ou sai de foco a função é chamada, adicionar código para realizar chamada apenas se o conteúdo tiver mudado
-			var cep_temp = this.store.cep.replace(/[-]/, "");
+			console.log(item.value)
+			store.setCadastro(item.value)
+			loading.value = false
+			//setTimeout(() => (router.push({ name: 'cadastro_documentos' })), 2000);
+		}
 
-			if(this.old_cep == cep_temp){
-				return this.msg_search;
+		const sem_numero_checkbox_update = () => {
+			if (sem_numero_checkbox.value) {
+				store.value.numero = 'Sem número';
+				numero_field_variant = 'outlined';
+			} else {
+				store.value.numero = null;
+				numero_field_variant.value = 'filled';
 			}
-			this.old_cep = cep_temp
+		}
+
+		const cep_search = async () => {
+			var cep_temp = item.value.cep.replace(/[-]/, "");
+
+			if (old_cep.value == cep_temp) {
+				return msg_search.value
+			}
+			old_cep.value = cep_temp
 
 			await fetch('https://brasilapi.com.br/api/cep/v1/' + cep_temp)
 				.then(response => {
 					if (!response.ok) {
 						if (response.status == '404') {
-							this.msg_search = 'CEP não encontrado';
-							this.store.logradouro = null;
-							this.store.bairro = null;
-							this.store.cidade = null;
-							this.store.estado = null;
+							msg_search.value = 'CEP não encontrado'
+							item.value.logradouro = null
+							item.value.bairro = null
+							item.value.cidade = null
+							item.value.estado = null
 						}
 					} else {
-						return response.json();
+						return response.json()
 					}
 				})
 				.then(data => {
 					if (data) {
-						this.store.logradouro = data.street;
-						this.store.bairro = data.neighborhood;
-						this.store.cidade = data.city;
-						this.store.estado = data.state;
-						this.msg_search = true;
-						this.store.cep = cep_temp.substring(0,5) + '-' + cep_temp.substring(5,8)
+						item.value.logradouro = data.street
+						item.value.bairro = data.neighborhood
+						item.value.cidade = data.city
+						item.value.estado = data.state
+						msg_search.value = true
+						item.value.cep = cep_temp.substring(0, 5) + '-' + cep_temp.substring(5, 8)
 					}
 				})
-				return this.msg_search;
-		},
-	}
+			return msg_search.value;
+		}
+		return {
+			item,
+			form,
+			store,
+			loading,
+			rules,
+			sem_numero_checkbox,
+			numero_field_variant,
+			onSubmit,
+			sem_numero_checkbox_update,
+			cep_search,
+		}
+	},
 }
 </script>

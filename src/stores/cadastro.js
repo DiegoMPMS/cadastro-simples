@@ -44,6 +44,9 @@ export const useCadastroStore = defineStore("cadastro", {
     setCadastro(value) {
       this.form = value;
     },
+    checkForm(){
+      
+    }
   },
   persist: true,
 });

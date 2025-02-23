@@ -70,23 +70,23 @@
 	</v-form>
 
 </template>
+
 <script>
-import { useCadastroStore } from '@/stores/cadastro';
-import { ref, computed,onMounted } from 'vue'
-import { useRoute,  useRouter} from 'vue-router'
+import { useCadastroStore } from '@/stores/cadastro'
+import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 export default {
 	props: {},
 	emits: ['save'],
 	setup(props, { emit }) {
-
-		const store = useCadastroStore();
+		// --- DATA ---
+		const store = useCadastroStore()
 		const router = useRouter()
-		const route = useRoute()
+		//const route = useRoute()
 		const form = ref(false)
 		const loading = ref(false)
 		const item = ref(store.form)
-
 
 		// Regras de validação para o formulário
 		const rules = {
@@ -105,6 +105,8 @@ export default {
 				return pattern.test(value) || 'CPF em formato inválido'
 			}
 		}
+
+		// --- METHODS ---
 		const onSubmit = () => {
 			if (!form.value) return
 
@@ -116,8 +118,8 @@ export default {
 
 			store.setCadastro(item.value)
 			setTimeout(() => (
-			
-			router.push({ name: 'cadastro_endereco' })), 2000)
+
+				router.push({ name: 'cadastro_endereco' })), 2000)
 		}
 
 		const password_match = () => {
@@ -127,7 +129,7 @@ export default {
 		}
 
 		const cpf_valid = () => {
-			var cpf_temp = item.value.cpf;
+			var cpf_temp = item.value.cpf
 
 			cpf_temp = cpf_temp.replace(/[^\d]/g, "");
 
@@ -139,7 +141,6 @@ export default {
 
 			for (let i = 1; i <= 9; i++) soma = soma + parseInt(cpf_temp.substring(i - 1, i)) * (11 - i);
 			verificador = 11 - (soma % 11);
-
 
 			// validar primeiro digito verificador
 			if (verificador == 10) verificador = 0;
@@ -158,18 +159,17 @@ export default {
 			item.value.cpf = cpf_temp.substring(0, 3) + '.' + cpf_temp.substring(3, 6) + '.' + cpf_temp.substring(6, 9) + '-' + cpf_temp.substring(9, 11);
 			return true
 		}
-		onMounted(()=>{
-		/*item.$subscribe((mutation,state)=>{
-		  if(mutation.events.key === 'step'){
-			
-      }})
-			emit('save', state)
-			
-			*/
-
+		onMounted(() => {
+			/*item.$subscribe((mutation,state)=>{
+				if(mutation.events.key === 'step'){
+				
+				}})
+				emit('save', state)
+				
+				*/
 		})
 		return {
-		item,
+			item,
 			form,
 			store,
 			loading,
@@ -177,11 +177,9 @@ export default {
 			onSubmit,
 			password_match,
 			cpf_valid
-
 		};
 	}
 
 
 }
 </script>
-
