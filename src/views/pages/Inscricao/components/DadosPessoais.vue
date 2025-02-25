@@ -9,18 +9,18 @@
 				<!-- Se eu estiver entendo isso corretamente cols divide a linha em 12 "blocos" e sm indica quantos blocos tem ESSA coluna -->
 				<!-- tentei alterar o valor de 'sm' não vi mudança visual -->
 				<v-col cols="12" sm="6">
-					<v-text-field v-model="item.name" :readonly="loading" :rules="[rules.required]" label="Nome"
+					<v-text-field v-model="formData.name" :readonly="loading" :rules="[rules.required]" label="Nome"
 						clearable></v-text-field>
 				</v-col>
 				<v-col cols="12" sm="6">
-					<v-text-field v-model="item.sobrenome" :readonly="loading" :rules="[rules.required]" label="Sobrenome"
+					<v-text-field v-model="formData.sobrenome" :readonly="loading" :rules="[rules.required]" label="Sobrenome"
 						clearable></v-text-field>
 				</v-col>
 			</v-row>
 
 			<v-row class="mb-2">
 				<v-col cols="12" sm="6">
-					<v-text-field v-model="item.nomeSocial" :readonly="loading" label="Nome Social" clearable>
+					<v-text-field v-model="formData.nomeSocial" :readonly="loading" label="Nome Social" clearable>
 						<template v-slot:append-inner>
 							<v-tooltip location="bottom">
 								<template v-slot:activator="{ props }">
@@ -35,7 +35,7 @@
 					</v-text-field>
 				</v-col>
 				<v-col cols="12" sm="6">
-					<v-text-field v-model="item.cpf" :readonly="loading" :rules="[rules.required, rules.cpf_format, cpf_valid]"
+					<v-text-field v-model="formData.cpf" :readonly="loading" :rules="[rules.required, rules.cpf_format, cpf_valid]"
 						label="CPF" placeholder="XXX.XXX.XXX-XX" maxlength="14"></v-text-field>
 				</v-col>
 			</v-row>
@@ -46,7 +46,7 @@
 		<v-container>
 			<v-row>
 				<v-col cols="12" sm="12">
-					<v-text-field v-model="item.email" :readonly="loading" :rules="[rules.required, rules.email]" label="Email"
+					<v-text-field v-model="formData.email" :readonly="loading" :rules="[rules.required, rules.email]" label="Email"
 						clearable></v-text-field>
 				</v-col>
 
@@ -54,12 +54,12 @@
 
 			<v-row>
 				<v-col cols="12" sm="6">
-					<v-text-field v-model="item.password" type="password" :readonly="loading"
+					<v-text-field v-model="formData.password" type="password" :readonly="loading"
 						:rules="[rules.required, rules.comprimento_senha]" label="Senha" placeholder="Digite sua senha"
 						clearable></v-text-field>
 				</v-col>
 				<v-col>
-					<v-text-field v-model="item.password_confirmation" type="password" :readonly="loading"
+					<v-text-field v-model="formData.password_confirmation" type="password" :readonly="loading"
 						:rules="[rules.required, rules.comprimento_senha, password_match]" label="Confirmar Senha"
 						placeholder="Digite sua senha" clearable></v-text-field>
 				</v-col>
@@ -72,21 +72,21 @@
 </template>
 
 <script>
-import { useCadastroStore } from '@/stores/cadastro'
+//import { useCadastroStore } from '@/stores/cadastro'
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 export default {
-	props: {},
+	props: ['store', 'formData'],
 	emits: ['save'],
 	setup(props, { emit }) {
 		// --- DATA ---
-		const store = useCadastroStore()
+		const store = ref(props.store)
 		const router = useRouter()
 		//const route = useRoute()
 		const form = ref(false)
 		const loading = ref(false)
-		const item = ref(store.form)
+		const formData = ref(props.formData)
 
 		// Regras de validação para o formulário
 		const rules = {
@@ -116,20 +116,20 @@ export default {
 			// e provavelmente um acesso ao VUE storage pra guardar as informações caso seja necessário voltar ou reiniciar o formulário
 			// por enquanto esperamos alguns segundos e seguimos para a próxima página.
 
-			store.setCadastro(item.value)
+			store.setCadastro(formData.value)
 			setTimeout(() => (
 
 				router.push({ name: 'cadastro_endereco' })), 2000)
 		}
 
 		const password_match = () => {
-			if (item.value.password === item.value.password_confirmation) {
+			if (formData.value.password === formData.value.password_confirmation) {
 				return true;
 			} else { return 'Senhas não conferem' }
 		}
 
 		const cpf_valid = () => {
-			var cpf_temp = item.value.cpf
+			var cpf_temp = formData.value.cpf
 
 			cpf_temp = cpf_temp.replace(/[^\d]/g, "");
 
@@ -156,11 +156,11 @@ export default {
 
 			//aplicar pontos e barra no cpf
 			//console.log('done')
-			item.value.cpf = cpf_temp.substring(0, 3) + '.' + cpf_temp.substring(3, 6) + '.' + cpf_temp.substring(6, 9) + '-' + cpf_temp.substring(9, 11);
+			formData.value.cpf = cpf_temp.substring(0, 3) + '.' + cpf_temp.substring(3, 6) + '.' + cpf_temp.substring(6, 9) + '-' + cpf_temp.substring(9, 11);
 			return true
 		}
 		onMounted(() => {
-			/*item.$subscribe((mutation,state)=>{
+			/*formData.$subscribe((mutation,state)=>{
 				if(mutation.events.key === 'step'){
 				
 				}})
@@ -169,14 +169,13 @@ export default {
 				*/
 		})
 		return {
-			item,
 			form,
-			store,
+			formData,
 			loading,
 			rules,
 			onSubmit,
 			password_match,
-			cpf_valid
+			cpf_valid,
 		};
 	}
 

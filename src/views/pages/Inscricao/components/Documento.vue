@@ -115,17 +115,17 @@
 </template>
 
 <script>
-import { useCadastroStore } from '@/stores/cadastro'
+//import { useCadastroStore } from '@/stores/cadastro'
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 
 export default {
-	props: {},
+	props: ['store', 'formData', 'formFiles'],
 	emits: [],
 	setup(props, { emit }) {
 		// --- DATA ---
-		const store = useCadastroStore()
+		const store = ref(props.store)
 		const router = useRouter()
 		const route = useRoute()
 		const form = ref(false)

@@ -29,6 +29,7 @@ export const useCadastroStore = defineStore("cadastro", {
       cert_quitacao_eleitoral: null,
       certidao_antecedentes_criminais: null,
       reservista_dispensa: null,
+      relatorio_medico: null,
       declaracao_afrodescendencia: null,
     },
     //Documentos são o ultimo passo e são enviados diretamente ao servidor

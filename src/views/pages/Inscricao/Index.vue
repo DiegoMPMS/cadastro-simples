@@ -8,7 +8,7 @@
       <v-sheet class="bg-light-blue pa-12" rounded>
         <v-card class="mx-auto px-6 py-8">
           <!-- Migalhas de pão usadas para indicar a etapa do cadastro, talvez exista um solução mais elegante -->
-          <v-breadcrumbs :items="items">
+          <v-breadcrumbs :items="crumbs">
             <template v-slot:title="{ item }">
               <span class="item-bread" :class="route.name == item.route_name ? 'item-current-route' : ''"
                 @click="redirected(item.route_name)">{{ item.title }}</span>
@@ -18,9 +18,9 @@
             </template>
           </v-breadcrumbs>
           <!--  <RouterView />  -->
-          <DadosPessoais v-if="store.step == 1" />
-          <Endereco v-if="store.step == 2" />
-          <Documento v-if="store.step == 3" />
+          <DadosPessoais v-if="store.step == 1" :store="store" :form-data="formData"/>
+          <Endereco v-if="store.step == 2" :store="store" :form-data="formData"/>
+          <Documento v-if="store.step == 3" :store="store" :form-data="formData" :form-files="formFiles"/>
         </v-card>
       </v-sheet>
     </v-main>
@@ -48,7 +48,9 @@ export default {
     const router = useRouter()
     const route = useRoute()
     const store = useCadastroStore()
-    const items = ref([
+    const formData = ref(store.form)
+    const formFiles = ref(store.arquivos)
+    const crumbs = ref([
       {
         title: 'Dados Pessoais',
         disabled: true,
@@ -85,8 +87,8 @@ export default {
     }
     const whereAmI = () => {
       // a função é chamada ma vez no evento de mounted() e chamada sempre que a rota muda, usando um watcher
-      for (let index = 0; index < items.value.length; index++) {
-        const element = items.value[index];
+      for (let index = 0; index < crumbs.value.length; index++) {
+        const element = crumbs.value[index];
         if (route_order.indexOf(route.name) + 1 >= parseInt(element.step)) {
           element.disabled = false;
         } else {
@@ -95,11 +97,12 @@ export default {
       }
     }
     return {
-      Documento,
-      items,
-      redirected,
-      store,
       route,
+      store,
+      formData,
+      formFiles,
+      crumbs,
+      redirected,
     }
 
   },
