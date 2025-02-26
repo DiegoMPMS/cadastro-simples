@@ -63,6 +63,7 @@
 //import { useCadastroStore } from '@/stores/cadastro';
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import ruleBook from '@/plugins/ruleBook.js';
 
 export default {
 	props: ['store', 'formData'],
@@ -156,6 +157,7 @@ export default {
 			onSubmit,
 			sem_numero_checkbox_update,
 			cep_search,
+			ruleBook,
 		}
 	},
 }

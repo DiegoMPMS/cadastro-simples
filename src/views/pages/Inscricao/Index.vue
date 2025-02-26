@@ -53,19 +53,19 @@ export default {
     const crumbs = ref([
       {
         title: 'Dados Pessoais',
-        disabled: true,
+        disabled: computed(() => {return store.step < 1 || false}) ,
         route_name: 'cadastro_dados',
         step: 1,
       },
       {
         title: 'Endereço',
-        disabled: true,
+        disabled: computed(() => {return store.step < 2 || false}),
         route_name: 'cadastro_endereco',
         step: 2,
       },
       {
         title: 'Documentos',
-        disabled: true,
+        disabled: computed(() => {return store.step < 3 || false}),
         route_name: 'cadastro_documentos',
         step: 3,
       },
@@ -75,11 +75,11 @@ export default {
     const route_order = ['cadastro_dados', 'cadastro_endereco', 'cadastro_documentos']
     // --- WATCHERS ---
     watch(route, (to, from) => {
-      whereAmI();
+      //whereAmI();
     })
     // --- MOUNTED LIFECYCLE HOOK --- 
     onMounted(() => {
-      whereAmI();
+      //whereAmI();
     })
     // --- METHODS ---
     const redirected = (value) => {
